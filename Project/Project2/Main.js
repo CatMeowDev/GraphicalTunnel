@@ -281,7 +281,7 @@ numpoints = 90;
 
     for (var fu = 0; fu < maxballs; fu++) {
         var particleGroup, particleAttributes;
-        var particleTexture = THREE.ImageUtils.loadTexture('https://raw.githubusercontent.com/optics2/GraphicalTunnel/master/Project/Project2/images/spark.png');
+        var particleTexture = THREE.ImageUtils.loadTexture('https://rawgit.com/optics2/GraphicalTunnel/master/Project/Project2/images/spark.png');
 
         particleGroup = new THREE.Object3D();
         particleAttributes = { startSize: [], startPosition: [], randomness: [] };
@@ -594,7 +594,7 @@ Main.prototype.generateTunnelGeometry2 = function (vertices, segments, radius, r
 
 Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
 
-    var texture = THREE.ImageUtils.loadTexture("https://raw.githubusercontent.com/optics2/GraphicalTunnel/master/Project/Project2/images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("https://rawgit.com/optics2/GraphicalTunnel/master/Project/Project2/images/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(numpoints / 2, 1);
@@ -618,7 +618,7 @@ Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
 }
 Main.prototype.createpath = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("https://raw.githubusercontent.com/optics2/GraphicalTunnel/master/Project/Project2/images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("https://rawgit.com/optics2/GraphicalTunnel/master/Project/Project2/images/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -640,7 +640,7 @@ Main.prototype.createpath = function (geom) {
 
 Main.prototype.createTunnelMesh = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("https://raw.githubusercontent.com/optics2/GraphicalTunnel/master/Project/Project2/images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("https://rawgit.com/optics2/GraphicalTunnel/master/Project/Project2/images/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
