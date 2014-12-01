@@ -18,7 +18,7 @@ var numglowsphers = 5;
 var tunnels = [];
 var numtunnels = 5;
 var maxballs = 15;
-var maxtunnels =80;
+var maxtunnels =60;
 var particlegroups = [];
 var particlegroupsAttributes = [];
 // custom global variables
@@ -478,7 +478,7 @@ numpoints = 90;
 	numbtunnels.onChange(function(value)
 	{   numtunnels = value;   });
 
-    var speed = gui.add( parameters, 'speed' ).min(0.00001).max(.0007).step(0.00001).name('Speed').listen();
+    var speed = gui.add( parameters, 'speed' ).min(0.00001).max(.0009).step(0.00001).name('Speed').listen();
 	speed.onChange(function(value)
 	{   Main.TRAVEL_INCREMENT = value;   });
 
