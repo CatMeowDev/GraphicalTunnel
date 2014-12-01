@@ -14,11 +14,11 @@ var randomy = [];
 var randomz = [];
 var random = 1;
 var randompaths = [];
-var numglowsphers = 1;
+var numglowsphers = 5;
 var tunnels = [];
-var numtunnels = 1;
-var maxballs = 1;
-var maxtunnels =1;
+var numtunnels = 5;
+var maxballs = 15;
+var maxtunnels =60;
 var particlegroups = [];
 var particlegroupsAttributes = [];
 // custom global variables
