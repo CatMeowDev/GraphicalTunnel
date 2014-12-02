@@ -18,7 +18,7 @@ var numglowsphers = 5;
 var tunnels = [];
 var numtunnels = 5;
 var maxballs = 15;
-var maxtunnels =20;
+var maxtunnels =30;
 var particlegroups = [];
 var particlegroupsAttributes = [];
 // custom global variables
