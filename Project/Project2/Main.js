@@ -281,7 +281,7 @@ numpoints = 90;
 
     for (var fu = 0; fu < maxballs; fu++) {
         var particleGroup, particleAttributes;
-        var particleTexture = THREE.ImageUtils.loadTexture('https://lh5.googleusercontent.com/PWCjADf5ZcpJmET4xKXe3uqr6kucW-0whHVLhZoST8u3BeuRszmGHDjgY52758on2rETOO5Kbwc=w1106-h569');
+        var particleTexture = THREE.ImageUtils.loadTexture('http://www.nckas.org/images/objects/polaris.jpg');
 
         particleGroup = new THREE.Object3D();
         particleAttributes = { startSize: [], startPosition: [], randomness: [] };
@@ -594,7 +594,7 @@ Main.prototype.generateTunnelGeometry2 = function (vertices, segments, radius, r
 
 Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
 
-    var texture = THREE.ImageUtils.loadTexture("https://lh3.googleusercontent.com/9sdHJOqlrtaEnpCjWRaGaFgkhPIbsErz1vXJx9fDgMbhEm0DOQKgU-Ra_MLkAOjXX28b7F7uXqA=w1106-h569");
+    var texture = THREE.ImageUtils.loadTexture("http://dc603.4shared.com/img/uc_f0HRL/s7/13fd1b75360/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(numpoints / 2, 1);
@@ -618,7 +618,7 @@ Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
 }
 Main.prototype.createpath = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("https://lh3.googleusercontent.com/9sdHJOqlrtaEnpCjWRaGaFgkhPIbsErz1vXJx9fDgMbhEm0DOQKgU-Ra_MLkAOjXX28b7F7uXqA=w1106-h569");
+    var texture = THREE.ImageUtils.loadTexture("http://dc603.4shared.com/img/uc_f0HRL/s7/13fd1b75360/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -640,7 +640,7 @@ Main.prototype.createpath = function (geom) {
 
 Main.prototype.createTunnelMesh = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("https://lh3.googleusercontent.com/9sdHJOqlrtaEnpCjWRaGaFgkhPIbsErz1vXJx9fDgMbhEm0DOQKgU-Ra_MLkAOjXX28b7F7uXqA=w1106-h569");
+    var texture = THREE.ImageUtils.loadTexture("http://dc603.4shared.com/img/uc_f0HRL/s7/13fd1b75360/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
