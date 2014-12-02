@@ -14,11 +14,11 @@ var randomy = [];
 var randomz = [];
 var random = 1;
 var randompaths = [];
-var numglowsphers =1;
+var numglowsphers = 5;
 var tunnels = [];
-var numtunnels = 1;
-var maxballs = 1;
-var maxtunnels =1;
+var numtunnels = 5;
+var maxballs = 5;
+var maxtunnels =5;
 var particlegroups = [];
 var particlegroupsAttributes = [];
 // custom global variables
@@ -264,13 +264,13 @@ numpoints = 90;
     this.scene.add(this.tunnel);
   
         	var materialArray = [];
-/*	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/xpos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/xneg.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ypos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/yneg.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/zpos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/zneg.png' ) }));
-*/	var MovingCubeMat = new THREE.MeshFaceMaterial(materialArray);
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
+	var MovingCubeMat = new THREE.MeshFaceMaterial(materialArray);
 	var MovingCubeGeom = new THREE.CubeGeometry( 1, 1, 1, 1, 1, 1, materialArray );
 	MovingCube = new THREE.Mesh( MovingCubeGeom, MovingCubeMat );
 	
@@ -281,7 +281,7 @@ numpoints = 90;
 
     for (var fu = 0; fu < maxballs; fu++) {
         var particleGroup, particleAttributes;
-        var particleTexture = THREE.ImageUtils.loadTexture('i252.photobucket.com/albums/hh35/optics2/spark.png');
+        var particleTexture = THREE.ImageUtils.loadTexture('http://i252.photobucket.com/albums/hh35/optics2/spark.png');
 
         particleGroup = new THREE.Object3D();
         particleAttributes = { startSize: [], startPosition: [], randomness: [] };
@@ -478,7 +478,7 @@ numpoints = 90;
 	numbtunnels.onChange(function(value)
 	{   numtunnels = value;   });
 
-    var speed = gui.add( parameters, 'speed' ).min(0.00001).max(.0009).step(0.00001).name('Speed').listen();
+    var speed = gui.add( parameters, 'speed' ).min(0.00001).max(.0007).step(0.00001).name('Speed').listen();
 	speed.onChange(function(value)
 	{   Main.TRAVEL_INCREMENT = value;   });
 
@@ -594,7 +594,7 @@ Main.prototype.generateTunnelGeometry2 = function (vertices, segments, radius, r
 
 Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
 
-    var texture = THREE.ImageUtils.loadTexture("i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(numpoints / 2, 1);
@@ -612,13 +612,13 @@ Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
     material.opacity = 0.8;
     material.transparent = true;
 
-    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
 Main.prototype.createpath = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -633,14 +633,14 @@ Main.prototype.createpath = function (geom) {
         map: texture
   
     });*/
-    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
 
 Main.prototype.createTunnelMesh = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -655,7 +655,7 @@ Main.prototype.createTunnelMesh = function (geom) {
         map: texture
   
     });
-    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
