@@ -594,7 +594,7 @@ Main.prototype.generateTunnelGeometry2 = function (vertices, segments, radius, r
 
 Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
 
-    var texture = THREE.ImageUtils.loadTexture("http://joat.es/images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://www.mms3d.cn/kapok3d/textures/img/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(numpoints / 2, 1);
@@ -618,7 +618,7 @@ Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
 }
 Main.prototype.createpath = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("http://joat.es/images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://www.mms3d.cn/kapok3d/textures/img/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -640,7 +640,7 @@ Main.prototype.createpath = function (geom) {
 
 Main.prototype.createTunnelMesh = function (geom) {
 
-    var texture = THREE.ImageUtils.loadTexture("http://joat.es/images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://www.mms3d.cn/kapok3d/textures/img/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
