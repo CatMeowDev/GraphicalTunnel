@@ -257,7 +257,7 @@ numpoints = 90;
 
     //DEFORMED SPHERE TEXTURE CODE
 
-    	var lavaTexture = new THREE.ImageUtils.loadTexture( 'images/rainbow2.png');
+    	var lavaTexture = new THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/rainbow2.png');
 	lavaTexture.wrapS = lavaTexture.wrapT = THREE.RepeatWrapping; 
 	//  distortion speed multiplyer		
 	var baseSpeed = 0.08;
@@ -265,13 +265,13 @@ numpoints = 90;
 	var repeatS = repeatT = 4.0;
 	
 	// texture used to generate "randomness", distort all other textures
-	var noiseTexture = new THREE.ImageUtils.loadTexture( 'images/cloud.png' );
+	var noiseTexture = new THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/cloud.png' );
 	noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping; 
 	// magnitude of noise effect
 	var noiseScale = 0.6;
 	
 	// texture to additively blend with base image texture
-	var blendTexture = new THREE.ImageUtils.loadTexture( 'images/rainbow2.png' );
+	var blendTexture = new THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/rainbow2.png' );
 	blendTexture.wrapS = blendTexture.wrapT = THREE.RepeatWrapping; 
 	// multiplier for distortion speed 
 	var blendSpeed = 0.01;
@@ -323,7 +323,7 @@ numpoints = 90;
 
     for (var fu = 0; fu < maxballs; fu++) {
         var particleGroup, particleAttributes;
-        var particleTexture = THREE.ImageUtils.loadTexture('images/spark.png');
+        var particleTexture = THREE.ImageUtils.loadTexture('http://i252.photobucket.com/albums/hh35/optics2/spark.png');
 
         particleGroup = new THREE.Object3D();
         particleAttributes = { startSize: [], startPosition: [], randomness: [] };
@@ -623,7 +623,7 @@ Main.prototype.generateTunnelGeometry2 = function (vertices, segments, radius, r
 
 Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {//creates mesh maps texture and geom
     
-    var texture = THREE.ImageUtils.loadTexture("images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(numpoints / 2, 1);
@@ -641,13 +641,13 @@ Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {//creates me
     material.opacity = 0.8;
     material.transparent = true;
 
-    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
 Main.prototype.createpath = function (geom) {//creates paths
 
-    var texture = THREE.ImageUtils.loadTexture("images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -662,14 +662,14 @@ Main.prototype.createpath = function (geom) {//creates paths
         map: texture
   
     });*/
-    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
 
 Main.prototype.createTunnelMesh = function (geom) {//creates tunnel maps texture
 
-    var texture = THREE.ImageUtils.loadTexture("images/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -684,7 +684,7 @@ Main.prototype.createTunnelMesh = function (geom) {//creates tunnel maps texture
         map: texture
   
     });
-    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
