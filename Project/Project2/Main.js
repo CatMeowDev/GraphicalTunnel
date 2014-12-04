@@ -257,7 +257,7 @@ numpoints = 90;
 
     //DEFORMED SPHERE TEXTURE CODE
 
-    	var lavaTexture = new THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/rainbow.png');
+    	var lavaTexture = new THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/water.jpg');
 	lavaTexture.wrapS = lavaTexture.wrapT = THREE.RepeatWrapping; 
 	//  distortion speed multiplyer		
 	var baseSpeed = 0.08;
@@ -271,7 +271,7 @@ numpoints = 90;
 	var noiseScale = 0.6;
 	
 	// texture to additively blend with base image texture
-	var blendTexture = new THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/rainbow.png' );
+	var blendTexture = new THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/water.jpg' );
 	blendTexture.wrapS = blendTexture.wrapT = THREE.RepeatWrapping; 
 	// multiplier for distortion speed 
 	var blendSpeed = 0.01;
