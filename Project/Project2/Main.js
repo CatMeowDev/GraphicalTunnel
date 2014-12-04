@@ -1,26 +1,34 @@
 var numpoints;
-Main.TRAVEL_INCREMENT   = .00001;
-Main.ROTATION_INCREMENT = 0.0025;//.0025
-var points = [];
-var keyboard;
-var clock = new THREE.Clock();
+Main.TRAVEL_INCREMENT   = .00001;//speed of tunnel
+Main.ROTATION_INCREMENT = 0.0025;//rate which tunnel rotates
+var points = [];//points array for path
+var keyboard;//input
+var clock = new THREE.Clock();//timer
 var container, scene, camera, renderer, controls, stats;
-var first = 1;
+var first = 1;//if first time
 var count = 0;
-var addx = 0;
-var addy = 0;
-var randomx = [];
-var randomy = [];
-var randomz = [];
+var addx = 0;//tracks x location of ball
+var addy = 0;//tracks y location of ball
+var randomx = [];//random Xs
+var randomy = [];//random Ys
+var randomz = [];//random Zs
 var random = 1;
 var randompaths = [];
 var numglowsphers = 5;
 var tunnels = [];
-var numtunnels = 5;
+var numtunnels = 10;
 var maxballs = 15;
-var maxtunnels =35;
+var maxtunnels =50;
 var particlegroups = [];
 var particlegroupsAttributes = [];
+var controlledrotation = 0.0;
+var rotationspeed = 1;
+var manualrotate = 0;
+var camerarotate;
+var camerarotate2;
+var lastmode = 0;
+var customUniforms;
+var pulse = 0.4;//rate at which the spheres pulse
 // custom global variables
 
 var MovingCube;
@@ -41,22 +49,30 @@ function update2(p3,num)
 	var rotateAngle = Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
     */
 	var time = 4 * clock.getElapsedTime();
-	/*
+	
     
 	// global coordinates
-if (keyboard.pressed("left"))
-//MovingCube.position.x -= moveDistance;
-    addy -= moveDistance;
-	if ( keyboard.pressed("right") )
-	//	MovingCube.position.x += moveDistance;
-    addy += moveDistance;
-    if ( keyboard.pressed("up") )
-	  addx += moveDistance;
-      //  MovingCube.position.y += moveDistance;
-	if ( keyboard.pressed("down") )
-		addx -= moveDistance;
+	if (manualrotate != 0) {
+	    if (keyboard.pressed("left"))
+	        controlledrotation -= 0.0025;
+	    //Main.ROTATION_INCREMENT += 0.00025;//.0025
+	    //MovingCube.position.x -= moveDistance;
+	    // addy -= moveDistance;
+	    if (keyboard.pressed("right"))
+	        controlledrotation += 0.0025; //.0025
+	    //	MovingCube.position.x += moveDistance;
+	    // addy += moveDistance;
+	    if (keyboard.pressed("up"))
+	    // addx += moveDistance;
+	        Main.TRAVEL_INCREMENT += .000001;
+	    if (keyboard.pressed("down")) {
+	        if (Main.TRAVEL_INCREMENT > 0.000001)
+	            Main.TRAVEL_INCREMENT -= .000001;
+	    }
+	}
+        //addx -= moveDistance;
         //MovingCube.position.z += moveDistance;
-
+        /*
 if (addx > 6)
     addx = 6;
     if (addx < -6)
@@ -70,15 +86,15 @@ if (addx > 6)
 //addy = Math.random()*10;
 
 	particlegroups[num].position.z = p3.z;
-    particlegroups[num].position.x = p3.x+addx;
-    particlegroups[num].position.y = p3.y+addy;
+    particlegroups[num].position.x = p3.x;//+addx;
+    particlegroups[num].position.y = p3.y;//+addy;
 
 	for ( var c = 0; c < particlegroups[num].children.length; c ++ ) 
 	{
 		var sprite = particlegroups[num].children[ c ];
 
 		// particle wiggle
-		 var wiggleScale = 2;
+		 var wiggleScale = 300;
 		 sprite.position.x += wiggleScale * (Math.random() - 0.5);
 		 sprite.position.y += wiggleScale * (Math.random() - 0.5);
 		 sprite.position.z += wiggleScale * (Math.random() - 0.5);
@@ -86,7 +102,7 @@ if (addx > 6)
 		// pulse away/towards center
 		// individual rates of movement
 		var a = particlegroupsAttributes[num].randomness[c] + 1;
-		var pulseFactor = Math.sin(a * time) * 0.1 + 0.9;
+		var pulseFactor = Math.sin(a * time) * pulse + 0.9;
 		sprite.position.x = particlegroupsAttributes[num].startPosition[c].x * pulseFactor;
 		sprite.position.y = particlegroupsAttributes[num].startPosition[c].y * pulseFactor;
 		sprite.position.z = particlegroupsAttributes[num].startPosition[c].z * pulseFactor;	
@@ -116,60 +132,33 @@ function update(p3)
 	var moveDistance = 20 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 	
+	customUniforms.time.value += delta;
+//keeps it on tunnel path
   MovingCube.position.z +=(p3.z-MovingCube.position.z);
     MovingCube.position.x += (p3.x-(MovingCube.position.x));MovingCube.position.x += addx;
     if ( count > 100)
     {
-   // alert(MovingCube.position.y);
     count = 0;
     }
 count++;
     MovingCube.position.y += (p3.y-MovingCube.position.y);
         MovingCube.position.y += addy;
-	// local coordinates
 
-	// local transformations
-
-	// move forwards/backwards/left/right
-	if ( keyboard.pressed("W") )
-		MovingCube.translateZ( -moveDistance );
-	if ( keyboard.pressed("S") )
-		MovingCube.translateZ(  moveDistance );
-	if ( keyboard.pressed("Q") )
-		MovingCube.translateX( -moveDistance );
-	if ( keyboard.pressed("E") )
-		MovingCube.translateX(  moveDistance );	
-
-	// rotate left/right/up/down
-	var rotation_matrix = new THREE.Matrix4().identity();
-	if ( keyboard.pressed("A") )
-		MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
-	if ( keyboard.pressed("D") )
-		MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
-	if ( keyboard.pressed("R") )
-		MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), rotateAngle);
-	if ( keyboard.pressed("F") )
-		MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), -rotateAngle);
-	
-//	if ( keyboard.pressed("Z") )
-//	{
-	//	MovingCube.position.set(0,25,0);
-	//	MovingCube.rotation.set(0,0,0);
-//	}
 		
-	// global coordinates
-if (keyboard.pressed("left"))
-//MovingCube.position.x -= moveDistance;
+	// move movable ball
+if (keyboard.pressed("A"))
     addy -= moveDistance;
-	if ( keyboard.pressed("right") )
-	//	MovingCube.position.x += moveDistance;
+	if ( keyboard.pressed("D") )
     addy += moveDistance;
-    if ( keyboard.pressed("up") )
+    if ( keyboard.pressed("W") )
 	  addx += moveDistance;
-      //  MovingCube.position.y += moveDistance;
-	if ( keyboard.pressed("down") )
+	if ( keyboard.pressed("S") )
 		addx -= moveDistance;
-        //MovingCube.position.z += moveDistance;
+
+   MovingCube.rotation.x += rotateAngle;
+	 MovingCube.rotation.y += rotateAngle;
+	 MovingCube.rotation.z += rotateAngle;
+
 
 if (addx > 6)
     addx = 6;
@@ -189,14 +178,13 @@ if (addx > 6)
 function Main()
 {
    keyboard= new THREEx.KeyboardState();
- 
-	// The distance we've travelled through the tunnel. Between 0.0 and 1.0.
+ //distance traveled
 	this.travelledStep = 0.0;
 
-	// We'll rotate the camera around its z-axis as it moves through the tunnel.
+	//used to rotates
     this.rotationStep = 0.0;
 
-    // Create the renderer.
+    // Creates the renderer.
 	this.webGLRenderer = new THREE.WebGLRenderer();
     this.webGLRenderer.setClearColorHex( 0xFFAA88, 1.0);
 	this.webGLRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -212,7 +200,7 @@ function Main()
 	container.appendChild( stats.domElement );
 
 
-    // Create the scene and setup the camera.
+    // Creates the scene and sets up the camera.
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(
     	45,
@@ -231,7 +219,7 @@ directionalLight2.color.setRGB(1, 0.3, 0.7);
 this.scene.add( directionalLight2 );
     var directionalLight3 = new THREE.DirectionalLight( 0xff66ff, 3 );
 directionalLight3.position.set( 0, -1, 0 );
-directionalLight3.color.setRGB(.8, .4, .4);
+//directionalLight3.color.setRGB(.8, .4, .4);
 this.scene.add( directionalLight3 );
 
 
@@ -244,44 +232,98 @@ numpoints = 90;
  {
      var color;
      color = getRandomColor();
-     this.geom = this.generateTunnelGeometry2(points, 3072, .075, 3, 9);
+     this.geom = this.generateTunnelGeometry2(points, 2048, .075, 3, 9);
       tunnels.push(this.createTunnelMesh2(this.geom, color,color));
        this.scene.add(tunnels[fu]);
   }
-  /* {
-
-     this.geom = this.generateTunnelGeometry2(points, 3072, .1, 3, 8);
-     this.tunnel = this.createTunnelMesh2(this.geom, 0xFF0000,0xFF0000);
-       this.scene.add(this.tunnel);
-  }*/
-
-    //       this.geom = this.generateTunnelGeometry2(points, 3072, .1, 20,10);
-     // this.tunnel = this.createTunnelMesh2(this.geom, 1.0);
-     
-      // this.scene.add(this.tunnel);
+  
         	this.geom = this.generateTunnelGeometry(3072, 12, 40);
     this.tunnel = this.createTunnelMesh(this.geom);
     this.scene.add(this.tunnel);
-  
-        	var materialArray = [];
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
-	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'http://i252.photobucket.com/albums/hh35/optics2/xpos.png' ) }));
+  //code for cube that I replces with defrming sphere
+   /*     	var materialArray = [];
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/xpos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/xneg.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ypos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/yneg.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/zpos.png' ) }));
+	materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/zneg.png' ) }));
 	var MovingCubeMat = new THREE.MeshFaceMaterial(materialArray);
-	var MovingCubeGeom = new THREE.CubeGeometry( 1, 1, 1, 1, 1, 1, materialArray );
-	MovingCube = new THREE.Mesh( MovingCubeGeom, MovingCubeMat );
+	var MovingCubeGeom = new THREE.CubeGeometry( 1, 1, 1, 1, 1, 1, materialArray );*/
+	//MovingCube = new THREE.Mesh( MovingCubeGeom, MovingCubeMat );
 	
-    MovingCube.position.set(points[0].x+5, points[0].y+5, points[0].z + 10);
+   // MovingCube.position.set(points[0].x+5, points[0].y+5, points[0].z + 10);
 	//this.scene.add( MovingCube );
+
+    //DEFORMED SPHERE TEXTURE CODE
+
+    	var lavaTexture = new THREE.ImageUtils.loadTexture( 'images/rainbow2.png');
+	lavaTexture.wrapS = lavaTexture.wrapT = THREE.RepeatWrapping; 
+	//  distortion speed multiplyer		
+	var baseSpeed = 0.08;
+	// number of times to repeat texture in each direction
+	var repeatS = repeatT = 4.0;
+	
+	// texture used to generate "randomness", distort all other textures
+	var noiseTexture = new THREE.ImageUtils.loadTexture( 'images/cloud.png' );
+	noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping; 
+	// magnitude of noise effect
+	var noiseScale = 0.6;
+	
+	// texture to additively blend with base image texture
+	var blendTexture = new THREE.ImageUtils.loadTexture( 'images/rainbow2.png' );
+	blendTexture.wrapS = blendTexture.wrapT = THREE.RepeatWrapping; 
+	// multiplier for distortion speed 
+	var blendSpeed = 0.01;
+	// adjust lightness/darkness of blended texture
+	var blendOffset = 0.25;
+
+	// texture to determine normal displacement
+	var bumpTexture = noiseTexture;
+	bumpTexture.wrapS = bumpTexture.wrapT = THREE.RepeatWrapping; 
+	// multiplier for distortion speed 		
+	var bumpSpeed   = 0.19;
+	// magnitude of normal displacement
+	var bumpScale   = 2.5;
+	
+	// use "this." to create global object
+	customUniforms = {
+		baseTexture: 	{ type: "t", value: lavaTexture },
+		baseSpeed:		{ type: "f", value: baseSpeed },
+		repeatS:		{ type: "f", value: repeatS },
+		repeatT:		{ type: "f", value: repeatT },
+		noiseTexture:	{ type: "t", value: noiseTexture },
+		noiseScale:		{ type: "f", value: noiseScale },
+		blendTexture:	{ type: "t", value: blendTexture },
+		blendSpeed: 	{ type: "f", value: blendSpeed },
+		blendOffset: 	{ type: "f", value: blendOffset },
+		bumpTexture:	{ type: "t", value: bumpTexture },
+		bumpSpeed: 		{ type: "f", value: bumpSpeed },
+		bumpScale: 		{ type: "f", value: bumpScale },
+		alpha: 			{ type: "f", value: 1.0 },
+		time: 			{ type: "f", value: 1.0 }
+	};
+	
+	// create custom material from the shader code above
+	//   that is within specially labeled script tags
+	customMaterial = new THREE.ShaderMaterial( 
+	{
+	    uniforms: customUniforms,
+		vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+		fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+	}   );
+		
+	var ballGeometry = new THREE.SphereGeometry( 1, 64, 64 );
+	MovingCube = new THREE.Mesh(ballGeometry, customMaterial );
+	MovingCube.position.set(points[0].x+5, points[0].y+5, points[0].z + 10);
+	this.scene.add( MovingCube );
+
 
 
 
     for (var fu = 0; fu < maxballs; fu++) {
         var particleGroup, particleAttributes;
-        var particleTexture = THREE.ImageUtils.loadTexture('http://i252.photobucket.com/albums/hh35/optics2/spark.png');
+        var particleTexture = THREE.ImageUtils.loadTexture('images/spark.png');
 
         particleGroup = new THREE.Object3D();
         particleAttributes = { startSize: [], startPosition: [], randomness: [] };
@@ -294,53 +336,37 @@ numpoints = 90;
             var sprite = new THREE.Sprite(spriteMaterial);
             sprite.scale.set(1, 1, .4); // imageWidth, imageHeight
             sprite.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
-            // for a cube:
-            // sprite.position.multiplyScalar( radiusRange );
-            // for a solid sphere:
-            // sprite.position.setLength( radiusRange * Math.random() );
-            // for a spherical shell:
-            sprite.position.setLength(radiusRange * (Math.random() * 0.1 + 0.9));
+            
+            sprite.position.setLength(radiusRange * (Math.random() * 0.1 + 0.9)); //makes a hollow sphere
 
             sprite.material.color.setRGB(Math.random(), Math.random(), Math.random());
             sprite.material.color.setHSL(Math.random(), 1.9, 0.7);
 
-            sprite.opacity = 0.60; // translucent particles
+            sprite.opacity = 0.60; // translucent particles //,6
 
-            sprite.material.blending = THREE.NormalBlending; // "glowing" particles
+            sprite.material.blending = THREE.NormalBlending; 
 
-            particleGroup.add(sprite);
-            // add variable qualities to arrays, if they need to be accessed later
+            particleGroup.add(sprite); //add them to arrays for use in other methods
             particleAttributes.startPosition.push(sprite.position.clone());
             particleAttributes.randomness.push(Math.random());
         }
-        particleGroup.position.set(points[0].x + 5, points[0].y + 5, points[0].z + 10);
+        particleGroup.position.set(points[0].x + 5, points[0].y + 5, points[0].z + 10);//set initial position
         particlegroupsAttributes.push(particleAttributes);
         particlegroups.push(particleGroup);
         this.scene.add(particleGroup);
-         randompaths.push( this.generaterandom(points, 1048, 4, 1, 9));
+         randompaths.push( this.generaterandom(points, 1048, 4, 1, 9));//set path of particle
          randomx.push(Math.random());
          randomy.push(Math.random());
          randomz.push(Math.random());
     }
-      //  	THREEx.WindowResize(renderer, camera);
-//	THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
-	// CONTROLS
-	//controls = new THREE.OrbitControls( this.camera, this.webGLRenderer.domElement );
-  
-
-//    this.generateTunnelGeometry2()
-   //  var color;
-    // color = getRandomColor();
-     //this.geom = this.generateTunnelGeometry2();
-    //  randompaths.push( this.generaterandom(points, 3072, .1, 3, 10));
-       //this.scene.add(randompaths[randompaths[randompaths.length-1]]);
+     
 
 
 
 
 
 
-
+    //CREATES GUI And handles gui reaction and responses
 
 
        	
@@ -349,13 +375,17 @@ numpoints = 90;
 	parameters = 
 	{
 		x: 0, y: 30, z: 0,
-		color: "#ff0000", // color (change "#" to "0x")
-        color2: "#ff0000",
-         color3: "#ff0000",
+		color: "#ff80ff", // color (change "#" to "0x")
+        color2: "#ff4Dff",
+         color3: "#ff66ff",
          numballs: 5,
+         ballpulse: .4,
          numtunnels: 10,
          speed: .000015*(1000/numpoints),
          rotatespeed: .0025,
+         manualrotatemode : 0,
+         manualrotatespeed: 1.000,
+          movablesphere : 0,
           tunnel0 : "#ffffff",
          tunnel1 : "#ffffff",
           tunnel2 : "#ffffff",
@@ -380,12 +410,6 @@ numpoints = 90;
 		
 	};
 
-/*	var folder1 = gui.addFolder('Position');
-	var cubeX = folder1.add( parameters, 'x' ).min(-200).max(200).step(1).listen();
-	var cubeY = folder1.add( parameters, 'y' ).min(0).max(100).step(1).listen();
-	var cubeZ = folder1.add( parameters, 'z' ).min(-200).max(200).step(1).listen();
-
-    */
     var folder2 = gui.addFolder('TunnelColors');
 
         
@@ -451,15 +475,6 @@ numpoints = 90;
               tunnels[9].material.ambient.setHex(value.replace("#", "0x"));
           });
 
-	//folder1.open();
-	
-/*	cubeX.onChange(function(value) 
-	{   cube.position.x = value;   });
-	cubeY.onChange(function(value) 
-	{   cube.position.y = value;   });
-	cubeZ.onChange(function(value) 
-	{   cube.position.z = value;   });
-	*/
 	var cubeColor = gui.addColor( parameters, 'color' ).name('Color').listen();
 	cubeColor.onChange(function(value) // onFinishChange
 	{   directionalLight.color.setHex( value.replace("#", "0x") );   });
@@ -473,35 +488,53 @@ numpoints = 90;
     var numballs = gui.add( parameters, 'numballs' ).min(0).max(maxballs).step(1).name('Number of Balls').listen();
 	numballs.onChange(function(value)
 	{   numglowsphers = value;   });
-
+    var bpulse = gui.add( parameters, 'ballpulse' ).min(0).max(1.5).step(.1).name('Ball Pulse').listen();
+	bpulse.onChange(function(value)
+	{   pulse = value;   });
         var numbtunnels = gui.add( parameters, 'numtunnels' ).min(0).max(maxtunnels).step(1).name('Number of Lines').listen();
 	numbtunnels.onChange(function(value)
 	{   numtunnels = value;   });
 
-    var speed = gui.add( parameters, 'speed' ).min(0.00001).max(.0007).step(0.00001).name('Speed').listen();
+    var speed = gui.add( parameters, 'speed' ).min(0.00001).max(.0009).step(0.00001).name('Speed').listen();
 	speed.onChange(function(value)
 	{   Main.TRAVEL_INCREMENT = value;   });
 
        var rotatespeed = gui.add( parameters, 'rotatespeed' ).min(0).max(.12).step(0.0001).name('RotateSpeed').listen();
 	rotatespeed.onChange(function(value)
 	{   Main.ROTATION_INCREMENT = value;   });
-	
 
+         var manualrotatemode = gui.add( parameters, 'manualrotatemode' ).min(0).max(3).step(1).name('Manual Mode').listen();
+	manualrotatemode.onChange(function(value)
+	{   manualrotate = value;
+        
+         });
+      var manualrotatespeed = gui.add( parameters, 'manualrotatespeed' ).min(1).max(10).step(0.5).name('ManualRotateSpeed').listen();
+      manualrotatespeed.onChange(function (value) {
+          var oldspeed = rotationspeed;
+          rotationspeed = value;
+          controlledrotation = controlledrotation / (rotationspeed/oldspeed);
+      });
+        var movablesphere = gui.add( parameters, 'movablesphere' ).min(0).max(1).step(1).name('Movable Sphere').listen();
+        movablesphere.onChange(function (value) {
+            if (value)
+                MovingCube.visible = true;
+            else MovingCube.visible = false;
+        });
 
 	
 	gui.open();
 
 
 
+    MovingCube.visible = false;
 
 
 
 
+	
 
-
-
-
-
+	camerarotate = -Math.PI / 2;//initialize camera rotation
+    camerarotate2 = -Math.PI / 2;
 
 
     // Kick off the main loop.
@@ -509,7 +542,7 @@ numpoints = 90;
 }
 
 // Constants
-Main.prototype.generatePoints = function(numPoints, variance, distancebetween)
+Main.prototype.generatePoints = function(numPoints, variance, distancebetween)//generates random points to be uses for other paths
 {
       var prevPoint = new THREE.Vector3(0, 0, 0);
     for (var i = 0; i < numPoints; i++)
@@ -527,19 +560,16 @@ Main.prototype.generatePoints = function(numPoints, variance, distancebetween)
 
 }
 
-Main.prototype.generateTunnelGeometry = function(segments, radius, radiusSegments)
+Main.prototype.generateTunnelGeometry = function(segments, radius, radiusSegments)//gennerates tunnel from points
 {
-	// Create an array of points that we will generate our spline from.
 	
-  
-
-    // Generate a spline from our points.
+    // generates a line curve from points.
     spline = new THREE.SplineCurve3(points);
     
-    // Generate geometry for a tube using our spline.
+    //generates a geometry.
     return new THREE.TubeGeometry(spline, segments, radius, radiusSegments, false);
 }
-Main.prototype.generaterandom = function (vertices, segments, radius, radiusSegments, radius2) {
+Main.prototype.generaterandom = function (vertices, segments, radius, radiusSegments, radius2) {//generates random tunnel lines
     var vertices2 = [];
 
     for (var fu = 0; fu < vertices.length; fu++) {
@@ -560,7 +590,6 @@ Main.prototype.generaterandom = function (vertices, segments, radius, radiusSegm
 
     }
 
-  //  spline = new THREE.SplineCurve3(vertices2);
 
     return vertices2;
 }
@@ -592,9 +621,9 @@ Main.prototype.generateTunnelGeometry2 = function (vertices, segments, radius, r
     return new THREE.TubeGeometry(spline, segments, radius, radiusSegments, false);
 }
 
-Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
-
-    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
+Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {//creates mesh maps texture and geom
+    
+    var texture = THREE.ImageUtils.loadTexture("images/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set(numpoints / 2, 1);
@@ -612,13 +641,13 @@ Main.prototype.createTunnelMesh2 = function (geom, color, ambient) {
     material.opacity = 0.8;
     material.transparent = true;
 
-    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
-Main.prototype.createpath = function (geom) {
+Main.prototype.createpath = function (geom) {//creates paths
 
-    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("images/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -633,14 +662,14 @@ Main.prototype.createpath = function (geom) {
         map: texture
   
     });*/
-    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
 
-Main.prototype.createTunnelMesh = function (geom) {
+Main.prototype.createTunnelMesh = function (geom) {//creates tunnel maps texture
 
-    var texture = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    var texture = THREE.ImageUtils.loadTexture("images/water.jpg");
     texture.wrapT = THREE.RepeatWrapping;
     texture.wrapS = THREE.RepeatWrapping;
     texture.repeat.set( numpoints/2, 1 );
@@ -655,12 +684,12 @@ Main.prototype.createTunnelMesh = function (geom) {
         map: texture
   
     });
-    // material.map = THREE.ImageUtils.loadTexture("http://i252.photobucket.com/albums/hh35/optics2/water.jpg");
+    // material.map = THREE.ImageUtils.loadTexture("images/water.jpg");
     //   material.needsUpdate = true;
     return new THREE.Mesh(geom, material);
 }
 
-Main.prototype.render = function () {
+Main.prototype.render = function () {//renderer method handles rendering after setup is complete handles modes etc
 
     if (this.travelledStep > .95 - Main.TRAVEL_INCREMENT) {
         this.travelledStep = 0.0;
@@ -669,25 +698,76 @@ Main.prototype.render = function () {
     spline = new THREE.SplineCurve3(points);
     var p1 = spline.getPointAt(this.travelledStep);
     var p2 = spline.getPointAt(this.travelledStep + Main.TRAVEL_INCREMENT);
-    this.camera.position.set(p1.x, p1.y, p1.z);
-    this.camera.lookAt(p2);
-    var p3 = spline.getPointAt(this.travelledStep + 20 * .00015);
-    this.camera.rotation.z = -Math.PI / 2 + (Math.sin(this.rotationStep) * Math.PI);
+    this.camera.position.set(p1.x, p1.y, p1.z);//set camera location aka move
+    this.camera.lookAt(p2);//set camera new look location, make it look down tunnel
+    var p3 = spline.getPointAt(this.travelledStep + 12 * .00015);
+    //manual rotate modes
+       if (manualrotate == 3) {//Hyper Mode/Seizure Mode
+   
+    this.camera.rotation.z = camerarotate + (controlledrotation * rotationspeed) + (Math.sin(this.rotationStep) * Math.PI);
+    camerarotate2 =  this.camera.rotation.z - (Math.sin(this.rotationStep) * Math.PI);
+    this.rotationStep += Main.ROTATION_INCREMENT;
+    camerarotate = this.camera.rotation.z;
 
+    //controlledrotation = 0;
+    } /*HYPER MODE! */
+
+    if (manualrotate == 2) {//Both Mode
+        //alert(controlledrotation);
+        if (lastmode == 1) {
+            camerarotate = camerarotate2;
+            controlledrotation = 0;
+        }
+        else if (lastmode == 0) {
+            controlledrotation = 0;
+            // this.rotationStep = 0;
+            camerarotate = camerarotate - (Math.sin(this.rotationStep) * Math.PI);
+        }
+        this.camera.rotation.z = camerarotate + (controlledrotation * rotationspeed) + (Math.sin(this.rotationStep) * Math.PI);
+        camerarotate2 = this.camera.rotation.z - (Math.sin(this.rotationStep) * Math.PI);
+        this.rotationStep += Main.ROTATION_INCREMENT;
+        lastmode = 2;
+        camerarotate3 = this.camera.rotation.z;
+
+       
+    }
+    else if (manualrotate) {//Manual Mode
+        
+        if (lastmode == 2) {
+            camerarotate = camerarotate3;
+
+            controlledrotation = 0;
+        }
+        else if (lastmode == 0)
+            controlledrotation = 0;
+        this.camera.rotation.z = camerarotate + (controlledrotation * rotationspeed);
+        camerarotate2 = this.camera.rotation.z - (Math.sin(this.rotationStep) * Math.PI);
+        lastmode = 1;
+        
+    }
+    else {//automatic mode
+
+        this.camera.rotation.z = camerarotate2 + (Math.sin(this.rotationStep) * Math.PI);
+        this.rotationStep += Main.ROTATION_INCREMENT;
+        camerarotate = this.camera.rotation.z;
+        controlledrotation = 0;
+        lastmode = 0;
+
+    }
 
 
     this.travelledStep += Main.TRAVEL_INCREMENT;
-    this.rotationStep += Main.ROTATION_INCREMENT;
-    if (first == 1) {
+
+    if (first == 1) {//handles first instaces of rendering
         MovingCube.position.set(p3.x, p3.y, p3.z);
         first = 0;
     }
     else
 
 
-    // MovingCube.position.x = MovingCube.position.x;
-    //  update(p3);
-        if (random == 1) {
+     
+      update(p3);//updates movable sphere
+        if (random == 1) {//updates sprite groups
             for (var fu = 0; fu < numglowsphers; fu++) {
                 spline = new THREE.SplineCurve3(randompaths[fu]);
                 var p4 = spline.getPointAt(this.travelledStep + 20 * .00015);
@@ -695,15 +775,15 @@ Main.prototype.render = function () {
             }
 
         }
-    for (var fu = 0; fu < maxtunnels; fu++) {
+    for (var fu = 0; fu < maxtunnels; fu++) {//updates tunnels to visible or not
         if (fu < numtunnels)
             tunnels[fu].visible = true;
         else
             tunnels[fu].visible = false;
     }
-    stats.update();
+    stats.update();//fps counter
     requestAnimationFrame(this.render.bind(this));
-    this.webGLRenderer.render(this.scene, this.camera);
+    this.webGLRenderer.render(this.scene, this.camera);//render frame
 }
 
 Main.prototype.resize = function()
